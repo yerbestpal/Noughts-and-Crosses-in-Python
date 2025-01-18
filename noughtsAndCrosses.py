@@ -10,7 +10,7 @@ cell_size = 150
 
 running = True
 screen = pygame.display.set_mode(window_size)
-pygame.display.set_caption('Tic Tac Toe')
+pygame.display.set_caption('Noughts and Crosses')
 
 class TicTacToe():
 
@@ -44,9 +44,14 @@ class TicTacToe():
         self._draw_table()
 
         while self.running:
+            self._message()
             for self.event in pygame.event.get():
                 if self.event.type == pygame.QUIT:
                     self.running = False
+                
+                if self.event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.taking_move:
+                        self._move(self.event.pos)
             
             pygame.display.flip()
             self.FPS.tick(60)
@@ -111,16 +116,43 @@ class TicTacToe():
             8
         )
 
+    def _change_player(self):
+        self.player = "O" if self.player == "X" else "X"
+
+    # Processes the move
     def _move(self, pos):
         try:
             x, y = pos[0] // self.cell_size, pos[1] // self.cell_size
             if self.table[x][y] == "-":
                 self.table[x][y] = self.player
                 self._draw_char(x, y, self.player)
-                self._game_check()
+                # self._game_check()
                 self._change_player()
         except:
-            print("You can only click inside the table area")
+            print("You may only click inside the table area")
+    
+    def _draw_char(self, x, y, player):
+        if player == "O":
+            img = pygame.image.load("images/o.png")
+        elif player == "X":
+            img = pygame.image.load("images/x.png")
+        img = pygame.transform.scale(img, (self.cell_size, self.cell_size))
+        screen.blit(img, (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
+    
+    # Display instructions and game state messages
+    def _message(self):
+        if self.winner is not None:
+            screen.fill(self.game_over_bg_color, (130, 445, 193, 35))
+            msg = self.font.render(f'{self.winner} wins!', True, self.game_over_color)
+            screen.blit(msg, (144, 445))
+        elif not self.taking_move:
+            screen.fill(self.game_over_bg_color, (130, 445, 193, 35))
+            instructions = self.font.render('DRAW!!', True, self.game_over_color)
+            screen.blit(instructions, (165, 445))
+        else:
+            screen.fill(self.background_color, (130, 445, 193, 35))
+            instructions = self.font.render(f'{self.player} to move', True, self.instructions_color)
+            screen.blit(instructions, (135, 445))
 
 if __name__ == '__main__':
     g = TicTacToe(window_size[0])
