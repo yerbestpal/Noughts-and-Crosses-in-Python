@@ -125,7 +125,7 @@ class TicTacToe():
             if self.table[x][y] == "-":
                 self.table[x][y] = self.player
                 self._draw_char(x, y, self.player)
-                # self._game_check()
+                self._game_check()
                 self._change_player()
         except:
             print("You may only click inside the table area")
@@ -152,6 +152,77 @@ class TicTacToe():
             screen.fill(self.background_color, (130, 445, 193, 35))
             instructions = self.font.render(f'{self.player} to move', True, self.instructions_color)
             screen.blit(instructions, (135, 445))
+
+    def _game_check(self):
+        # Vertical check
+        for x_index, col in enumerate(self.table):
+            win = True
+            pattern_list = []
+            for y_index, content in enumerate(col):
+                if content != self.player:
+                    win = False
+                    break
+                else:
+                    pattern_list.append((x_index, y_index))
+            if win == True:
+                self._pattern_strike(pattern_list[0], pattern_list[-1], "ver")
+                self.winner = self.player
+                self.taking_move = False
+                self._message()
+                break
+        
+        # Horizontal check
+        for row in range(len(self.table)):
+            win = True
+            pattern_list = []
+            for col in range(len(self.table)):
+                if self.table[col][row] != self.player:
+                    win = False
+                    break
+                else:
+                    pattern_list.append((col, row))
+
+            if win == True:
+                self._pattern_strike(pattern_list[0], pattern_list[-1], "hor")
+                self.winner = self.player
+                self.taking_move = False
+                self._message()
+                break
+        
+        # Left diagonal check
+        for index, row in enumerate(self.table):
+            win = True
+            if row[index] != self.player:
+                win = False
+                break
+        if win == True:
+            self._pattern_strike((0, 0), (2, 2), "left-diag")
+            self.winner = self.player
+            self.taking_move = False
+            self._message()
+        
+        # Right diagonal check
+        for index, row in enumerate(self.table[::-1]):
+            win = True
+            if row[index] != self.player:
+                win = False
+                break
+        if win == True:
+            self._pattern_strike((2, 0), (0, 2), "right_diag")
+            self.winner = self.player
+            self.taking_move = False
+            self._message()
+        
+        # Blank table cells check
+        blank_cells = 0
+        for row in self.table:
+            for cell in row:
+                if cell == "-":
+                    blank_cells += 1
+        if blank_cells == 0:
+            self.taking_move = False
+            self._message()
+
 
 if __name__ == '__main__':
     g = TicTacToe(window_size[0])
