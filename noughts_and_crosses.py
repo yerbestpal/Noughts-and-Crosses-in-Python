@@ -13,7 +13,6 @@ screen = pygame.display.set_mode(window_size)
 pygame.display.set_caption('Noughts and Crosses')
 
 class TicTacToe():
-
     def __init__(self, table_size):
         self.table_size = table_size
         self.cell_size = table_size // 3
