@@ -224,6 +224,41 @@ class TicTacToe():
             self._message()
 
 
+    # Draws a line through the winning pattern
+    def _pattern_strike(self, start_point, end_point, line_type):
+        # Gets the middle value of the cell
+        mid_val = self.cell_size // 2
+
+        # For the vertical winning pattern
+        if line_type == "ver":
+            start_x, start_y = start_point[0] * self.cell_size + mid_val, self.table_space
+            end_x, end_y = end_point[0] * self.cell_size + mid_val, self.table_size - self.table_space
+        
+        # For the horizontal winning pattern
+        elif line_type == "hor":
+            start_x, start_y = self.table_space, start_point[1] * self.cell_size + mid_val
+            end_x, end_y = self.table_size - self.table_space, end_point[1] * self.cell_size + mid_val
+        
+        # For the left diagonal winning pattern
+        elif line_type == "left-diag":
+            start_x, start_y = self.table_space, self.table_space
+            end_x, end_y = self.table_size - self.table_space, self.table_size - self.table_space
+        
+        # For the right diagonal winning pattern
+        elif line_type == "right_diag":
+            start_x, start_y = self.table_size - self.table_space, self.table_space
+            end_x, end_y = self.table_space, self.table_size - self.table_space
+        
+        # Draws the line
+        line_strike = pygame.draw.line(
+            screen,
+            self.line_color,
+            [start_x, start_y],
+            [end_x, end_y],
+            8
+        )
+
+
 if __name__ == '__main__':
     g = TicTacToe(window_size[0])
     g.main()
